@@ -17,9 +17,12 @@ jobs:
         run: npm ci
       - name: Instalar CC Test Reporter
         env:
-          GIT_COMMIT_SHA: ${{github.sha}}
+          CI_BUILD_ID: ${{github.run_id}}
+          CI_NAME: github
           GIT_BRANCH: master
+          GIT_COMMIT_SHA: ${{github.sha}}
         run: |
+          export GIT_COMMITTED_AT="$(date +%s)"
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
           ./cc-test-reporter before-build --debug
@@ -30,9 +33,12 @@ jobs:
       - id: test-reporter-success
         name: Enviar relatório dos testes
         env:
-          GIT_COMMIT_SHA: ${{github.sha}}
+          CI_BUILD_ID: ${{github.run_id}}
+          CI_NAME: github
           GIT_BRANCH: master
+          GIT_COMMIT_SHA: ${{github.sha}}
         run: |
+          export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter env --debug
           ./cc-test-reporter show-coverage --debug
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
