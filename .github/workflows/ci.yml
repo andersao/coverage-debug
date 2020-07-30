@@ -24,9 +24,11 @@ jobs:
         name: Enviar relatório dos testes com sucesso
         if: ${{ success() }}
         env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
           GIT_COMMIT_SHA: ${{github.sha}}
           GIT_BRANCH: master
         run: | 
+          echo "$GITHUB_CONTEXT"
           export GIT_COMMIT_SHA=${{github.sha}}
           export GIT_BRANCH=master
           echo $GIT_COMMIT_SHA
