@@ -37,7 +37,7 @@ jobs:
           CI_NAME: github
           GIT_BRANCH: master
           GIT_COMMIT_SHA: ${{github.sha}}
-          CC_TEST_REPORTER_ID: ${{ secret.CC_TEST_REPORTER_ID }}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: |
           export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
