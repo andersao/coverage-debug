@@ -33,8 +33,8 @@ jobs:
           GIT_BRANCH: master
           GIT_COMMIT_SHA: ${{github.sha}}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          GIT_COMMITTED_AT: $(date +%s)
         run: |
+          export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
       - id: test-reporter-fails
         name: Enviar Test Reporter - Falha
@@ -45,8 +45,8 @@ jobs:
           GIT_BRANCH: master
           GIT_COMMIT_SHA: ${{github.sha}}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          GIT_COMMITTED_AT: $(date +%s)
         run: |
+          export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 1
           
   
