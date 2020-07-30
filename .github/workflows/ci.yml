@@ -39,8 +39,6 @@ jobs:
           GIT_COMMIT_SHA: ${{github.sha}}
         run: |
           export GIT_COMMITTED_AT="$(date +%s)"
-          ./cc-test-reporter env --debug
-          ./cc-test-reporter show-coverage --debug
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
           
   
