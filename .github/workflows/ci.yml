@@ -25,28 +25,16 @@ jobs:
           ./cc-test-reporter before-build
           npm test
       - id: test-reporter-success
-        name: Enviar Test Reporter - Sucesso
+        name: Enviar Test Reporter
         if: ${{ success() }}
         env:
           CI_BUILD_ID: ${{github.run_id}}
           CI_NAME: github
-          GIT_BRANCH: master
+          GIT_BRANCH: ${{github.ref}}
           GIT_COMMIT_SHA: ${{github.sha}}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: |
           export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
-      - id: test-reporter-fails
-        name: Enviar Test Reporter - Falha
-        if: ${{ failure() }}
-        env:
-          CI_BUILD_ID: ${{github.run_id}}
-          CI_NAME: github
-          GIT_BRANCH: master
-          GIT_COMMIT_SHA: ${{github.sha}}
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          export GIT_COMMITTED_AT="$(date +%s)"
-          ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 1
           
   
