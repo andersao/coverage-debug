@@ -19,8 +19,8 @@ jobs:
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
-          ./cc-test-reporter before-build
-          ./cc-test-reporter env
+          ./cc-test-reporter before-build --debug
+          ./cc-test-reporter env --debug
       - id: test-runner
         name: Executar testes
         run: npm test
@@ -30,8 +30,8 @@ jobs:
           GIT_COMMIT_SHA: ${{github.sha}}
           GIT_BRANCH: master
         run: |
-          ./cc-test-reporter env
-          ./cc-test-reporter show-coverage
+          ./cc-test-reporter env --debug
+          ./cc-test-reporter show-coverage --debug
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
           
   
