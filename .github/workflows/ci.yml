@@ -23,15 +23,19 @@ jobs:
       - id: test-reporter-success
         name: Enviar relatório dos testes com sucesso
         if: ${{ success() }}
+        env:
+          GIT_COMMIT_SHA: ${{github.sha}}
+          GIT_BRANCH: master
         run: | 
-          ls -la
           ./cc-test-reporter format-coverage -d -t lcov -o ${{github.workspace}}/coverage/codeclimate.json ${{github.workspace}}/coverage/lcov.info
           ./cc-test-reporter upload-coverage
       - id: test-reporter-failure
         name: Enviar relatório dos testes com falha
         if: ${{ failure() }}
         run: | 
+          pwd
           ls -la
+          ls -la coverage
           ./cc-test-reporter format-coverage -d -t lcov -o ${{github.workspace}}/coverage/codeclimate.json ${{github.workspace}}/coverage/lcov.info
           ./cc-test-reporter upload-coverage
   
