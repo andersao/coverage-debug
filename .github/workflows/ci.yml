@@ -15,31 +15,38 @@ jobs:
           fetch-depth: 0
       - name: Instalar dependências do projeto
         run: npm ci
-      - name: Instalar CC Test Reporter
-        env:
-          CI_BUILD_ID: ${{github.run_id}}
-          CI_NAME: github
-          GIT_BRANCH: master
-          GIT_COMMIT_SHA: ${{github.sha}}
+      - name: Instalar Test Reporter
         run: |
-          export GIT_COMMITTED_AT="$(date +%s)"
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
-          ./cc-test-reporter before-build --debug
-          ./cc-test-reporter env --debug
       - id: test-runner
         name: Executar testes
-        run: npm test
+        run: | 
+          ./cc-test-reporter before-build
+          npm test
       - id: test-reporter-success
-        name: Enviar relatório dos testes
+        name: Enviar Test Reporter - Sucesso
+        if: ${{ success() }}
         env:
           CI_BUILD_ID: ${{github.run_id}}
           CI_NAME: github
           GIT_BRANCH: master
           GIT_COMMIT_SHA: ${{github.sha}}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          GIT_COMMITTED_AT: $(date +%s)
         run: |
-          export GIT_COMMITTED_AT="$(date +%s)"
           ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
+      - id: test-reporter-fails
+        name: Enviar Test Reporter - Falha
+        if: ${{ failure() }}
+        env:
+          CI_BUILD_ID: ${{github.run_id}}
+          CI_NAME: github
+          GIT_BRANCH: master
+          GIT_COMMIT_SHA: ${{github.sha}}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          GIT_COMMITTED_AT: $(date +%s)
+        run: |
+          ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 1
           
   
