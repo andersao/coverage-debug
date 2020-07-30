@@ -32,6 +32,6 @@ jobs:
         run: |
           ./cc-test-reporter env
           ./cc-test-reporter show-coverage
-          ./cc-test-reporter after-build --debug -t lcov --exit-code 0
+          ./cc-test-reporter after-build --debug -t lcov -p ${{github.workspace}} --exit-code 0
           
   
