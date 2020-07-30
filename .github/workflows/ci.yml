@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout reposistório
         uses: actions/checkout@v2
+        with:
+          clean: false
+          fetch-depth: 0
       - name: Instalar dependências do projeto
         run: npm ci
       - name: Instalar CC Test Reporter
