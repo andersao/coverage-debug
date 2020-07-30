@@ -21,11 +21,13 @@ jobs:
         name: Executar testes
         run: npm test
       - id: test-reporter-success
-        name: Enviar relatório dos testes
+        name: Enviar relatório dos testes com sucesso
         if: ${{ success() }}
-        run: ./cc-test-reporter after-build --exit-code 0
+        run: | 
+          ./cc-test-reporter format-coverage -t lcov --prefix ${GITHUB_SHA}
+          ./cc-test-reporter after-build --exit-code 0
       - id: test-reporter-failure
-        name: Enviar relatório dos testes
+        name: Enviar relatório dos testes com falha
         if: ${{ failure() }}
-        run: ./cc-test-reporter after-build --exit-code 1
+        run: ./cc-test-reporter after-build --prefix ${GITHUB_SHA} --exit-code 1
   
