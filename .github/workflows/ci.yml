@@ -27,6 +27,10 @@ jobs:
           GIT_COMMIT_SHA: ${{github.sha}}
           GIT_BRANCH: master
         run: | 
+          export GIT_COMMIT_SHA=${{github.sha}}
+          export GIT_BRANCH=master
+          echo $GIT_COMMIT_SHA
+          echo $GIT_BRANCH
           ./cc-test-reporter format-coverage -d -t lcov -o ${{github.workspace}}/coverage/codeclimate.json ${{github.workspace}}/coverage/lcov.info
           ./cc-test-reporter upload-coverage
       - id: test-reporter-failure
