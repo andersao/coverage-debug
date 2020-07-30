@@ -8,15 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     container: node:12
     steps:
-      - name: Check out repository code
+        name: Checkout reposistório
         uses: actions/checkout@v2
-      - name: Install dependencies
+      - name: Instalar dependências do projeto
         run: npm ci
-      - name: Codeclimate Test Reporter
-        uses: paambaati/codeclimate-action@v2.5.7
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          NODE_ENV: test
-        with:
-          coverageCommand: npm test
-          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
+      - name: Instalar CC Test Reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+      - id: test-runner
+        name: Executar testes
+        run: npm test
+      - id: test-reporter-success
+        name: Enviar relatório dos testes
+        if: ${{ success() }}
+        run: ./cc-test-reporter after-build --exit-code 0
+      - id: test-reporter-failure
+        name: Enviar relatório dos testes
+        if: ${{ failure() }}
+        run: ./cc-test-reporter after-build --exit-code 1
+  
