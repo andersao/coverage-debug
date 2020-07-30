@@ -13,6 +13,9 @@ jobs:
       - name: Instalar dependências do projeto
         run: npm ci
       - name: Instalar CC Test Reporter
+        env:
+          GIT_COMMIT_SHA: ${{github.sha}}
+          GIT_BRANCH: master
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           chmod +x ./cc-test-reporter
@@ -21,27 +24,10 @@ jobs:
         name: Executar testes
         run: npm test
       - id: test-reporter-success
-        name: Enviar relatório dos testes com sucesso
-        if: ${{ success() }}
+        name: Enviar relatório dos testes
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
           GIT_COMMIT_SHA: ${{github.sha}}
           GIT_BRANCH: master
-        run: | 
-          echo "$GITHUB_CONTEXT"
-          export GIT_COMMIT_SHA=${{github.sha}}
-          export GIT_BRANCH=master
-          echo $GIT_COMMIT_SHA
-          echo $GIT_BRANCH
-          ./cc-test-reporter format-coverage -d -t lcov -o ${{github.workspace}}/coverage/codeclimate.json ${{github.workspace}}/coverage/lcov.info
-          ./cc-test-reporter upload-coverage
-      - id: test-reporter-failure
-        name: Enviar relatório dos testes com falha
-        if: ${{ failure() }}
-        run: | 
-          pwd
-          ls -la
-          ls -la coverage
-          ./cc-test-reporter format-coverage -d -t lcov -o ${{github.workspace}}/coverage/codeclimate.json ${{github.workspace}}/coverage/lcov.info
-          ./cc-test-reporter upload-coverage
+        run: ./cc-test-reporter after-build --debug -t lcov --exit-code 0
+          
   
